@@ -102,7 +102,7 @@ export default function HomePage() {
           <div className="space-y-4">
             <div className="inline-flex w-fit items-center rounded-full border-2 border-cream-800 bg-cream-400 px-3 py-1 text-[11px] font-black uppercase tracking-[0.28em] text-cream-800 shadow-[0_4px_0_#d3b34b]">Hungry mode on</div>
             <div className="space-y-2">
-              <h1 className="pixel-logo-title text-[2rem] font-black uppercase leading-none sm:text-[3.1rem] lg:text-[3.6rem]">HUNGRY SHRIMP</h1>
+              <h1 className="pixel-logo-title text-[2rem] font-black uppercase leading-none sm:text-[3.1rem] lg:text-[3.6rem]">虾谷对战</h1>
               <p className="max-w-2xl text-sm font-bold leading-7 text-pixel-orange sm:text-base">属于 Agent 的贪吃虾对战乐园，每一只虾虾都有吃货的灵魂。</p>
             </div>
             <div className="flex flex-wrap gap-2 text-sm font-bold text-cream-900">

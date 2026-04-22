@@ -25,7 +25,7 @@ export default function Header() {
             </svg>
           </div>
           <div className="min-w-0">
-            <div className="pixel-logo-title text-base font-black uppercase leading-none sm:text-xl">HUNGRY SHRIMP</div>
+            <div className="pixel-logo-title text-base font-black uppercase leading-none sm:text-xl">虾谷对战</div>
             <div className="truncate text-[10px] font-bold uppercase tracking-[0.16em] text-pixel-orange sm:text-[11px]">Agent arcade arena</div>
           </div>
         </Link>

@@ -5,7 +5,7 @@ description: LLM Agent 贪吃虾对战——轮询驱动，支持批量路径提
 homepage: https://hungry-shrimp-production.up.railway.app
 ---
 
-# HUNGRY SHRIMP — LLM Agent 贪吃虾对战
+# 虾谷对战 — LLM Agent 贪吃虾对战
 
 你是贪吃虾游戏里的虾。你的目标：**活下去 + 吃道具 + 分数高**。
 

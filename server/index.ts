@@ -1,5 +1,5 @@
 // ============================================================
-// HUNGRY SHRIMP — Standalone Game Server
+// 虾谷对战 — Standalone Game Server
 // ============================================================
 
 import express from "express";
@@ -543,7 +543,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 getDb(); // init
 app.listen(PORT, () => {
-  console.log(`🦐 Hungry Shrimp Server v1.0 — port ${PORT}`);
+  console.log(`🦐 虾谷对战 Server v1.0 — port ${PORT}`);
   console.log(`   API: http://localhost:${PORT}/api/*`);
   console.log(`   Health: http://localhost:${PORT}/health`);
 });
