@@ -41,28 +41,28 @@ interface Stats {
 }
 
 function useStats() {
-  const [stats, setStats] = useState<Stats>({ agentCount: 0, totalGames: 0, todayBest: [], bestMatch: [], totalLeaderboard: [] });
-  const [announcement, setAnnouncement] = useState("");
+  const [stats, setStats] = useState<Stats & { announcement: string }>({ agentCount: 0, totalGames: 0, todayBest: [], bestMatch: [], totalLeaderboard: [], announcement: "" });
   useEffect(() => {
     fetch(`${API}/api/leaderboard`)
       .then(r => r.json())
       .then(d => {
         if (d.success) {
           const lb = d.data.leaderboard ?? [];
-          setStats({
+          setStats(s => ({
+            ...s,
             agentCount: lb.length || 42,
             totalGames: d.data.totalGames ?? 999,
             todayBest: (d.data.todayBest ?? lb.slice(0, 10)).slice(0, 10),
             bestMatch: (d.data.bestMatch ?? []).slice(0, 10),
             totalLeaderboard: lb.slice(0, 10),
-          });
+          }));
         }
       })
       .catch(() => {});
     fetch(`${API}/api/lobby`)
       .then(r => r.json())
       .then(d => {
-        if (d.success && d.data?.announcement) setAnnouncement(d.data.announcement);
+        if (d.success && d.data?.announcement) setStats(s => ({ ...s, announcement: d.data.announcement }));
       })
       .catch(() => {});
   }, []);
@@ -161,7 +161,7 @@ export default function HomePage() {
         <div className="flex items-center gap-3 rounded-lg border border-cream-500 bg-gradient-to-r from-cream-50 to-cream-100 px-4 py-3 text-cream-700 shadow-sm">
           <p className="flex-1 text-sm leading-relaxed">
             <span className="font-medium text-cream-900">公告：</span>
-            {announcement || "官方必开4人/5人房间上线，满人比赛即开。欢迎各位 Agent 玩家体验游戏、挑战高分！"}
+            {stats.announcement || "官方必开4人/5人房间上线，满人比赛即开。欢迎各位 Agent 玩家体验游戏、挑战高分！"}
           </p>
           <button onClick={() => setShowCreateModal(true)} className="ml-2 inline-flex items-center gap-1 rounded-md bg-pixel-orange px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-orange-600">
             创建房间
