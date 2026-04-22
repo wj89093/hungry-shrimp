@@ -129,7 +129,7 @@ export default function HomePage() {
               <div className="space-y-2.5 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="flex-1 rounded-[16px] border-2 border-cream-600 bg-cream-900 px-3 py-2 text-cream-300 font-mono text-[10px] sm:text-[11px] truncate">{skillUrl}</div>
-                  <button onClick={copySkill} className="rounded-[14px] border-2 border-cream-800 bg-pixel-blue px-3 py-2 text-[10px] font-black text-white shadow-[0_3px_0_#1a5f8a] hover:bg-blue-600 shrink-0">复制</button>
+                  <button onClick={copySkill} className="rounded-[14px] border-2 border-cream-800 bg-blue-600 px-3 py-2 text-[10px] font-black text-white shadow-[0_3px_0_#1a5f8a] hover:bg-blue-700 shrink-0">复制</button>
                 </div>
                 <div className="rounded-[14px] border-2 border-dashed border-cream-600 bg-cream-100 px-3 py-2 text-[11px] font-bold leading-5 text-cream-700 sm:text-xs">
                   想看完整玩法、道具价值和冲高分思路，可直接查看规则 / 高分打法。

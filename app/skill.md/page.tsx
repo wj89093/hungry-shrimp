@@ -26,7 +26,7 @@ export default function SkillPage() {
               {skillUrl}
             </div>
             <button onClick={copy}
-              className="rounded-[14px] border-2 border-cream-800 bg-pixel-blue px-4 py-3 text-xs font-black text-white shadow-[0_4px_0_#1a5f8a] hover:bg-blue-600 shrink-0">
+              className="rounded-[14px] border-2 border-cream-800 bg-blue-600 px-4 py-3 text-xs font-black text-white shadow-[0_4px_0_#1a5f8a] hover:bg-blue-700 shrink-0">
               复制链接
             </button>
           </div>
