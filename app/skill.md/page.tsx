@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 export default function SkillPage() {
-  const skillUrl = typeof window !== "undefined" ? `${window.location.origin}/skill.md` : "/skill.md";
+  const skillUrl = typeof window !== "undefined" ? `${window.location.origin}/api/skill` : "/api/skill";
 
   const copy = () => navigator.clipboard.writeText(skillUrl).catch(() => {});
 
