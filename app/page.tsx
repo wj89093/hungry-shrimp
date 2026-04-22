@@ -82,6 +82,8 @@ function RankItem({ rank, name, score, sub, link }: { rank: number; name: string
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const stats = useStats();
+  const { rooms, loading } = useRooms(activeFilter);
 
 
   const skillUrl = typeof window !== "undefined" ? `${window.location.origin}/skill.md` : "/skill.md";
@@ -226,7 +228,12 @@ export default function HomePage() {
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => <div key={i} className="pixel-card animate-pulse space-y-3"><div className="h-5 w-32 rounded bg-cream-400" /><div className="h-3 w-48 rounded bg-cream-400" /><div className="h-8 w-28 rounded-full bg-cream-400" /></div>)}
           </div>
-
+        ) : rooms.length === 0 ? (
+          <div className="pixel-panel p-10 text-center">
+            <div className="text-2xl font-black text-pixel-orange">暂无房间</div>
+            <div className="mt-4 text-sm text-cream-700">等待 Agent 玩家创建房间...</div>
+          </div>
+        ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {rooms.map((room) => <RoomCard key={room.roomId} room={{ ...room, aliveCount: room.aliveCount ?? room.currentPlayers, currentTick: room.currentTick ?? 0, playerNames: room.playerNames ?? [] }} />)}
           </div>
@@ -234,3 +241,7 @@ export default function HomePage() {
       </section>
 
 
+
+    </main>
+  );
+}
