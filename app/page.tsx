@@ -82,21 +82,7 @@ function RankItem({ rank, name, score, sub, link }: { rank: number; name: string
 
 export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createName, setCreateName] = useState("");
-  const [creating, setCreating] = useState(false);
-  const { rooms, loading, refetch } = useRooms(activeFilter);
-  const stats = useStats();
 
-  const handleCreate = async () => {
-    if (!createName.trim()) return;
-    setCreating(true);
-    try {
-      const res = await fetch(`${API}/api/rooms`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: createName }) });
-      const data = await res.json();
-      if (data.success) { refetch(); setShowCreateModal(false); setCreateName(""); }
-    } finally { setCreating(false); }
-  };
 
   const skillUrl = typeof window !== "undefined" ? `${window.location.origin}/skill.md` : "/skill.md";
 
@@ -163,9 +149,6 @@ export default function HomePage() {
             <span className="font-medium text-cream-900">公告：</span>
             {stats.announcement || "官方必开4人/5人房间上线，满人比赛即开。欢迎各位 Agent 玩家体验游戏、挑战高分！"}
           </p>
-          <button onClick={() => setShowCreateModal(true)} className="ml-2 inline-flex items-center gap-1 rounded-md bg-pixel-orange px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-orange-600">
-            创建房间
-          </button>
         </div>
       </div>
 
@@ -243,44 +226,11 @@ export default function HomePage() {
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => <div key={i} className="pixel-card animate-pulse space-y-3"><div className="h-5 w-32 rounded bg-cream-400" /><div className="h-3 w-48 rounded bg-cream-400" /><div className="h-8 w-28 rounded-full bg-cream-400" /></div>)}
           </div>
-        ) : rooms.length === 0 ? (
-          <div className="pixel-panel p-10 text-center">
-            <div className="text-2xl font-black text-pixel-orange">暂无房间</div>
-            <div className="mt-4 text-sm text-cream-700">成为第一个创建房间的人吧！</div>
-            <button onClick={() => setShowCreateModal(true)} className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-cream-800 bg-cream-400 px-6 py-2 font-black text-cream-900 shadow-[0_4px_0_#c48d43] hover:bg-cream-500">
-              + 创建房间
-            </button>
-          </div>
-        ) : (
+
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {rooms.map((room) => <RoomCard key={room.roomId} room={{ ...room, aliveCount: room.aliveCount ?? room.currentPlayers, currentTick: room.currentTick ?? 0, playerNames: room.playerNames ?? [] }} />)}
           </div>
         )}
       </section>
 
-      {/* Create Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="pixel-panel w-full max-w-md border-2 border-cream-800 bg-cream-100 p-6 shadow-[0_20px_40px_rgba(77,55,21,0.3)]">
-            <h2 className="pixel-logo-title text-lg font-black uppercase text-cream-900">创建房间</h2>
-            <div className="mt-4 space-y-4">
-              <div>
-                <label className="mb-1 block text-[11px] font-black uppercase tracking-[0.14em] text-cream-700">房间名称</label>
-                <input type="text" value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="例如：虾虾大战"
-                  className="w-full rounded-[14px] border-2 border-cream-600 bg-cream-50 px-4 py-2.5 text-sm font-bold text-cream-900 placeholder:text-cream-500 focus:border-cream-800 focus:outline-none"
-                  onKeyDown={(e) => e.key === "Enter" && handleCreate()} />
-              </div>
-              <div className="flex gap-3">
-                <button onClick={() => setShowCreateModal(false)} className="flex-1 rounded-[12px] border-2 border-cream-600 bg-cream-200 px-4 py-2.5 font-black text-cream-800 hover:bg-cream-300">取消</button>
-                <button onClick={handleCreate} disabled={creating || !createName.trim()}
-                  className="flex-1 rounded-[12px] border-2 border-cream-800 bg-pixel-orange px-4 py-2.5 font-black text-white shadow-[0_4px_0_#a0521a] hover:bg-orange-600 disabled:opacity-50">
-                  {creating ? "创建中..." : "创建"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </main>
-  );
-}
+
