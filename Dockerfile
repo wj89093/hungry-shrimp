@@ -17,11 +17,7 @@ RUN npm ci --include=dev
 # Copy source
 COPY . .
 
-# Pre-compile TypeScript server
-RUN npx tsc --project server/tsconfig.json
-
-# Create data directory for SQLite
-RUN mkdir -p /data
+# Build step skipped — using tsx runtime
 
 # Environment
 ENV NODE_ENV=production
@@ -33,7 +29,7 @@ EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD curl -f http://localhost:8080/health || exit 1
+  CMD wget -qO- http://localhost:8080/health || exit 1
 
-# Start game server
-CMD ["node", "dist/server/index.js"]
+# Start game server (tsx handles TS at runtime)
+CMD ["npx", "tsx", "server/index.ts"]
