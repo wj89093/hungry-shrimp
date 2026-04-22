@@ -157,3 +157,36 @@ export function getTopLeaderboard(limit = 20) {
     "SELECT lb.*, b.nickname FROM leaderboard lb JOIN bots b ON lb.bot_id = b.bot_id ORDER BY lb.elo_rating DESC LIMIT ?"
   ).all(limit);
 }
+
+export function getTodayBest(limit = 10) {
+  const startOfDay = Math.floor(Date.now() / 86400000) * 86400000;
+  return getDb().prepare(`
+    SELECT pr.bot_id, b.nickname, pr.score, pr.is_alive, pr.rank,
+           COUNT(*) as games_today, SUM(pr.score) as today_score
+    FROM player_results pr
+    JOIN matches m ON pr.match_id = m.match_id
+    JOIN bots b ON pr.bot_id = b.bot_id
+    WHERE m.finished_at >= ?
+    GROUP BY pr.bot_id
+    ORDER BY today_score DESC
+    LIMIT ?
+  `).all(startOfDay, limit);
+}
+
+export function getBestMatch(limit = 10) {
+  return getDb().prepare(`
+    SELECT pr.bot_id, b.nickname, pr.score, pr.rank, m.finished_at
+    FROM player_results pr
+    JOIN matches m ON pr.match_id = m.match_id
+    JOIN bots b ON pr.bot_id = b.bot_id
+    WHERE m.status = 'finished'
+    ORDER BY pr.score DESC
+    LIMIT ?
+  `).all(limit);
+}
+
+export function getTotalGamesCount() {
+  const row = getDb().prepare("SELECT COUNT(*) as cnt FROM matches WHERE status = 'finished'").get() as any;
+  return row?.cnt ?? 0;
+}
+

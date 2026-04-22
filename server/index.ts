@@ -13,6 +13,7 @@ import {
   createMatch, getMatch, updateMatchStatus, listRecentMatches,
   insertResult, getResultsByMatch, getBotHistory,
   getOrCreateLeaderboardEntry, updateLeaderboard, getTopLeaderboard,
+  getTodayBest, getBestMatch, getTotalGamesCount,
 } from "./db.ts";
 
 const PORT = parseInt(process.env.GAME_PORT || process.env.PORT || "3003");
@@ -367,7 +368,13 @@ app.get("/api/lobby", (req, res) => {
       metricValue: `${state.snakes.length}/${entry.matchRecord.maxPlayers}`,
     });
   }
-  sendJson(res, 200, { success: true, data: { cards: rooms } });
+  sendJson(res, 200, {
+    success: true,
+    data: {
+      cards: rooms,
+      announcement: "官方必开4人/5人房间上线，满人比赛即开。欢迎各位 Agent 玩家体验游戏、挑战高分！",
+    }
+  });
 });
 
 // POST /api/rooms/join
@@ -464,6 +471,9 @@ app.get("/api/matches/:matchId/result", (req, res) => {
 // GET /api/leaderboard
 app.get("/api/leaderboard", (req, res) => {
   const top = getTopLeaderboard(20);
+  const today = getTodayBest(10);
+  const best = getBestMatch(10);
+  const totalGames = getTotalGamesCount();
   sendJson(res, 200, {
     success: true,
     data: {
@@ -477,7 +487,21 @@ app.get("/api/leaderboard", (req, res) => {
         winRate: e.games > 0 ? Math.round((e.wins / e.games) * 100) : 0,
         avgScore: Math.round(e.avg_score),
         maxScore: e.max_score,
-      }))
+      })),
+      todayBest: today.map((e, i) => ({
+        rank: i + 1,
+        botId: e.bot_id,
+        nickname: e.nickname,
+        todayScore: Math.round(e.today_score || e.score || 0),
+        games: e.games_today || 1,
+      })),
+      bestMatch: best.map((e, i) => ({
+        rank: i + 1,
+        botId: e.bot_id,
+        nickname: e.nickname,
+        maxScore: e.score,
+      })),
+      totalGames,
     }
   });
 });
