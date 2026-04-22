@@ -1,0 +1,12 @@
+[service.game-server]
+dockerfile = "Dockerfile"
+port = 8080
+healthcarePath = "/health"
+buildCommand = "npm ci && npm run build && npx tsc --project server/tsconfig.json"
+startCommand = "node dist/server/index.js"
+
+[environment.production]
+variables = {
+  GAME_PORT = "8080",
+  PORT = "8080"
+}
