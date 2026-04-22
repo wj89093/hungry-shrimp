@@ -1,26 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700;900&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-pixel: 'Press Start 2P', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
+  background-color: #f7edc8;
+  color: #3b2a19;
+}
+
+.pixel-logo-title {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+}
+
+.pixel-page-shell {
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+
+/* Pixel sticker frame for logo */
+.pixel-sticker-frame {
+  border: 3px solid #6c5a3c;
+  box-shadow: 2px 2px 0 #cbb78f, 4px 4px 0 rgba(203,183,143,0.5);
+}
+
+/* Pixel hero section */
+.pixel-hero {
+  border-bottom: 4px solid #6c5a3c;
+  background: linear-gradient(180deg, #fff8de, #f7edc8);
+  box-shadow: 0 6px 0 rgba(203,183,143,1);
+  padding: 1.25rem 1.5rem;
+}
+
+.pixel-grid-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbb78f' fill-opacity='0.15'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Pixel panel */
+.pixel-panel {
+  border: 2px solid #cbb78f;
+  background: #fff9e8;
+  box-shadow: 3px 3px 0 #cbb78f;
+  overflow: hidden;
+}
+
+/* Pixel card */
+.pixel-card {
+  border: 2px solid #cbb78f;
+  background: #fff9e8;
+  box-shadow: 3px 3px 0 #cbb78f;
+  padding: 1.25rem;
+}
+
+/* Pixel badge */
+.pixel-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 2px solid #6c5a3c;
+  padding: 0 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* Pixel chip */
+.pixel-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Pixel stat card */
+.pixel-stat-card {
+  border-radius: 18px;
+  border: 2px solid #cbb78f;
+  background: #fff9e8;
+  padding: 0.75rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f7edc8; }
+::-webkit-scrollbar-thumb { background: #cbb78f; border-radius: 4px; }
+
+/* Animations */
+@keyframes ping-slow {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 1.6s ease-out infinite;
 }
