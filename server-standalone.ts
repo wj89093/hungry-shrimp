@@ -5,7 +5,7 @@ import next from "next";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { spawn } from "child_process";
 
-const GAME_PORT = parseInt(process.env.GAME_PORT || "3003", 10);
+const GAME_PORT = 3003;
 const GAME_HOST = `http://localhost:${GAME_PORT}`;
 const PORT = parseInt(process.env.PORT || "8080", 10);
 
@@ -14,61 +14,67 @@ const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  // Spawn game server in background
+  // Spawn game server in background — explicitly pass GAME_PORT=3003, PORT=3003
   const gameProc = spawn("npx", ["tsx", "server/index.ts"], {
     cwd: process.cwd(),
     stdio: "inherit",
     detached: true,
-    env: { ...process.env, GAME_PORT: String(GAME_PORT), PORT: String(GAME_PORT) },
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      GAME_PORT: "3003",
+      PORT: "3003",
+      DB_PATH: process.env.DB_PATH || "/data/hungryshrimp.db",
+    },
   });
   gameProc.unref();
+  console.log(`[server-standalone] Game server spawning on :${GAME_PORT} (pid will detach)`);
 
   const server = createServer((req, res) => {
-    const parsedUrl = parse(req.url || "/", true);
+    const pathname = parse(req.url || "/").pathname || "/";
 
     // Proxy /api/* → game server
-    if (parsedUrl.pathname?.startsWith("/api")) {
+    if (pathname.startsWith("/api")) {
       createProxyMiddleware({
         target: GAME_HOST,
         changeOrigin: true,
         pathRewrite: { "^/api": "/api" },
       })(req as any, res as any, (err: any) => {
-        if (err) console.error("Proxy error:", err);
+        if (err) { res.writeHead(502); res.end(JSON.stringify({ error: "Game server unavailable" })); }
       });
       return;
     }
 
     // Proxy /ws/* → game server (WebSocket)
-    if (parsedUrl.pathname?.startsWith("/ws")) {
+    if (pathname.startsWith("/ws")) {
       createProxyMiddleware({
         target: GAME_HOST,
-        changeOrigin: true,
         ws: true,
         pathRewrite: { "^/ws": "/ws" },
       })(req as any, res as any);
       return;
     }
 
-    // Health check — proxy to game server directly
-    if (parsedUrl.pathname === "/health") {
+    // Health check — proxy to game server
+    if (pathname === "/health") {
       createProxyMiddleware({
         target: GAME_HOST,
         changeOrigin: true,
         pathRewrite: { "^/health": "/health" },
       })(req as any, res as any, (err: any) => {
-        if (err) { res.writeHead(502); res.end(JSON.stringify({ success: false })); }
+        if (err) { res.writeHead(502); res.end(JSON.stringify({ success: false, status: "unreachable" })); }
       });
       return;
     }
 
     // Everything else → Next.js
-    handle(req, res, parsedUrl);
+    handle(req, res, parse(req.url || "/", true));
   });
 
   // Handle WebSocket upgrades
   server.on("upgrade", (req, socket, head) => {
-    const pathname = parse(req.url || "/").pathname;
-    if (pathname?.startsWith("/ws")) {
+    const pathname = parse(req.url || "/").pathname || "/";
+    if (pathname.startsWith("/ws")) {
       createProxyMiddleware({
         target: GAME_HOST,
         ws: true,
@@ -78,6 +84,6 @@ app.prepare().then(() => {
   });
 
   server.listen(PORT, () => {
-    console.log(`> Ready on http://localhost:${PORT}`);
+    console.log(`[server-standalone] Proxy running on :${PORT}`);
   });
 });
